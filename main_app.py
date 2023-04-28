@@ -57,7 +57,7 @@ class calc_window:
         #
         # defining the main frame to hold all the data
         self.data_frame = tk.Frame(self.top)
-        self.data_frame.place(relx=0.01, rely=0.008, relheight=0.976, relwidth=0.775)
+        self.data_frame.place(relx=0.01, rely=0.008, relheight=0.976, relwidth=0.76)
         self.data_frame.configure(relief='groove')
         self.data_frame.configure(borderwidth="2")
         self.data_frame.configure(relief="groove")
