@@ -457,6 +457,8 @@ class calc_window:
             new_salary_text.configure(selectforeground="black")
             new_salary_text.configure(wrap="word")
             new_salary = self.salary[1] * ((1+(self._raise/100))**len(self.rows))
+            last_year = max(self.salary.keys())
+            self.salary[last_year+1] = new_salary
             new_salary_text.insert(INSERT,locale.currency(new_salary))
             new_row['salary_text'] = new_salary_text
             #
