@@ -11,6 +11,7 @@ import tkinter.ttk as ttk
 from tkinter.constants import *
 import support
 import locale
+locale.setlocale(locale.LC_ALL, locale.getlocale())
 
 _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
 _fgcolor = '#000000'  # X11 color: 'black'
