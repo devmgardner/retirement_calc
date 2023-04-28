@@ -66,6 +66,9 @@ class calc_window:
         self.data_frame.configure(background="#d9d9d9")
         self.data_frame.configure(highlightbackground="#d9d9d9")
         self.data_frame.configure(highlightcolor="black")
+        v = tk.Scrollbar(self.data_frame, orient='vertical')
+        self.data_frame.configure(yscrollcommand = v.set)
+        v.config(command=self.data_frame.yview)
         # placeholder widgets for first year calculation #
         # removed placeholders for year 1, all will be created procedurally
         #
