@@ -324,7 +324,7 @@ class calc_window:
             new_401k_amount = 0
             for i in range(len(self.rows)+1):
                 new_401k_amount += self._401k / 100 * self.salary
-            new_401k_text.insert(0,locale.currency(new_401k_amount,symbol=True,grouping=True))
+            new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
             new_row['401k_text'] = new_401k_text
             #
             new_401k_label = tk.Label(self.data_frame)
