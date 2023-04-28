@@ -10,6 +10,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.constants import *
 import support
+import locale
 
 _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
 _fgcolor = '#000000'  # X11 color: 'black'
@@ -319,6 +320,10 @@ class calc_window:
             new_401k_text.configure(selectbackground="#c4c4c4")
             new_401k_text.configure(selectforeground="black")
             new_401k_text.configure(wrap="word")
+            new_401k_amount = 0
+            for i in range(len(self.rows)+1):
+                new_401k_amount += self._401k / 100 * self.salary
+            new_401k_text.insert(0,locale.currency(new_401k_amount,symbol=True,grouping=True))
             new_row['401k_text'] = new_401k_text
             #
             new_401k_label = tk.Label(self.data_frame)
