@@ -66,7 +66,7 @@ class calc_window:
         self.data_frame.configure(highlightcolor="black")
         # placeholder widgets for first year calculation #
         self.year1_401k_text = tk.Text(self.data_frame)
-        self.year1_401k_text.place(x=10, y=10, height=25, relwidth=80)
+        self.year1_401k_text.place(x=10, y=10, height=25, width=80)
         self.year1_401k_text.configure(background="white")
         self.year1_401k_text.configure(font="TkTextFont")
         self.year1_401k_text.configure(foreground="black")
