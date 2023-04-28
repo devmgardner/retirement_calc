@@ -298,6 +298,8 @@ class calc_window:
         self.savings_button.configure(highlightcolor="black")
         self.savings_button.configure(pady="0")
         self.savings_button.configure(text='''Update''')
+        # creating blank list of rows
+        self.rows = []
         # command to create a row of widgets for a year's output
         def create_row(self):
             if len(self.rows) == 0:
@@ -465,10 +467,11 @@ class calc_window:
             return new_row
         #
         def place_widgets(self):
-            for row in self.rows:
-                for item in row.keys():
-                    if not item == 'y':
-                        row[item].destroy()
+            if len(self.rows) > 0:
+                for row in self.rows:
+                    for item in row.keys():
+                        if not item == 'y':
+                            row[item].destroy()
             self.rows = []
             for i in range(1,self.years+1):
                 self.rows.append(create_row(self))
