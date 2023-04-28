@@ -27,9 +27,9 @@ class calc_window:
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
 
-        top.geometry("1024x708+370+156")
+        top.geometry("1280x768+370+156")
         top.minsize(640, 480)
-        top.maxsize(1920, 1061)
+        top.maxsize(1920, 1080)
         top.resizable(1,  1)
         top.title("Retirement Calculator")
         top.configure(background="#d9d9d9")
@@ -425,12 +425,12 @@ class calc_window:
             get_401k(self)
             get_match(self)
             get_savings(self)
-            print(f'{self.years=}')
-            print(f'{self.salary=}')
-            print(f'{self._raise=}')
-            print(f'{self._401k=}')
-            print(f'{self.match=}')
-            print(f'{self.savings=}')
+            # print(f'{self.years=}')
+            # print(f'{self.salary=}')
+            # print(f'{self._raise=}')
+            # print(f'{self._401k=}')
+            # print(f'{self.match=}')
+            # print(f'{self.savings=}')
         # assign command to all buttons
         self.years_button.configure(command=lambda: update_data(self))
         self.salary_button.configure(command=lambda: update_data(self))
@@ -438,6 +438,13 @@ class calc_window:
         self._401k_button.configure(command=lambda: update_data(self))
         self.match_button.configure(command=lambda: update_data(self))
         self.savings_button.configure(command=lambda: update_data(self))
+        # create empty list for rows
+        self.rows = []
+        # command to create a row of widgets for a year's output
+        def create_row(self):
+            pass
+        def place_widgets(self):
+            pass
 
 
 def start_up():
