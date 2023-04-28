@@ -465,6 +465,10 @@ class calc_window:
             return new_row
         #
         def place_widgets(self):
+            for row in self.rows:
+                for item in row.keys():
+                    if not item == 'y':
+                        row[item].destroy()
             self.rows = []
             for i in range(1,self.years+1):
                 self.rows.append(create_row(self))
