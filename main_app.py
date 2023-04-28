@@ -322,7 +322,7 @@ class calc_window:
             new_401k_text.configure(selectbackground="#c4c4c4")
             new_401k_text.configure(selectforeground="black")
             new_401k_text.configure(wrap="word")
-            new_401k_amount = self._401k / 100 * self.salary[len(self.rows)-1]
+            new_401k_amount = self._401k / 100 * self.salary[len(self.rows)+1]
             new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
             new_row['401k_text'] = new_401k_text
             #
