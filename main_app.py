@@ -124,7 +124,8 @@ class calc_window:
         self.salary_entry.configure(selectforeground="white")
         #
         def get_salary(self):
-            self.salary = float(self.salary_entry.get())
+            self.salary = {}
+            self.salary[1] = float(self.salary_entry.get())
         #
         self.salary_label = tk.Label(self.top)
         self.salary_label.place(relx=0.862, rely=0.054, height=19, width=35)
@@ -323,7 +324,7 @@ class calc_window:
             new_401k_text.configure(wrap="word")
             new_401k_amount = 0
             for i in range(len(self.rows)+1):
-                new_401k_amount += self._401k / 100 * self.salary
+                new_401k_amount += self._401k / 100 * self.salary[i+1]
             new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
             new_row['401k_text'] = new_401k_text
             #
@@ -455,6 +456,7 @@ class calc_window:
             new_salary_text.configure(selectbackground="#c4c4c4")
             new_salary_text.configure(selectforeground="black")
             new_salary_text.configure(wrap="word")
+            new_salary_text.insert(INSERT,(self.salary*len(self.rows)*(1+(self._raise/100))))
             new_row['salary_text'] = new_salary_text
             #
             new_salary_label = tk.Label(self.data_frame)
