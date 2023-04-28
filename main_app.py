@@ -28,9 +28,9 @@ class calc_window:
            top is the toplevel containing window.'''
 
         top.geometry("1280x768+370+156")
-        top.minsize(640, 480)
+        top.minsize(1280, 768)
         top.maxsize(1920, 1080)
-        top.resizable(1,  1)
+        top.resizable(0,  0)
         top.title("Retirement Calculator")
         top.configure(background="#d9d9d9")
         top.configure(highlightbackground="#d9d9d9")
@@ -66,7 +66,7 @@ class calc_window:
         self.data_frame.configure(highlightcolor="black")
         # placeholder widgets for first year calculation #
         self.year1_401k_text = tk.Text(self.data_frame)
-        self.year1_401k_text.place(relx=0.013, rely=0.014, relheight=0.035, relwidth=0.104)
+        self.year1_401k_text.place(x=10, y=10, height=25, relwidth=80)
         self.year1_401k_text.configure(background="white")
         self.year1_401k_text.configure(font="TkTextFont")
         self.year1_401k_text.configure(foreground="black")
@@ -78,7 +78,7 @@ class calc_window:
         self.year1_401k_text.configure(wrap="word")
         #
         self.year1_401k_label = tk.Label(self.data_frame)
-        self.year1_401k_label.place(relx=0.13, rely=0.014, height=24, width=34)
+        self.year1_401k_label.place(x=100, y=10, height=25, width=35)
         self.year1_401k_label.configure(activebackground="#f9f9f9")
         self.year1_401k_label.configure(anchor='w')
         self.year1_401k_label.configure(background="#d9d9d9")
@@ -90,7 +90,7 @@ class calc_window:
         self.year1_401k_label.configure(text='''401k''')
         #
         self.year1_match_text = tk.Text(self.data_frame)
-        self.year1_match_text.place(relx=0.182, rely=0.014, relheight=0.035, relwidth=0.083)
+        self.year1_match_text.place(x=140, y=10, height=25, width=65)
         self.year1_match_text.configure(background="white")
         self.year1_match_text.configure(font="TkTextFont")
         self.year1_match_text.configure(foreground="black")
@@ -102,7 +102,7 @@ class calc_window:
         self.year1_match_text.configure(wrap="word")
         #
         self.year1_match_label = tk.Label(self.data_frame)
-        self.year1_match_label.place(relx=0.28, rely=0.014, height=24, width=50)
+        self.year1_match_label.place(x=215, y=10, height=25, width=50)
         self.year1_match_label.configure(activebackground="#f9f9f9")
         self.year1_match_label.configure(anchor='w')
         self.year1_match_label.configure(background="#d9d9d9")
@@ -114,7 +114,7 @@ class calc_window:
         self.year1_match_label.configure(text='''Match''')
         #
         self.year1_savings_text = tk.Text(self.data_frame)
-        self.year1_savings_text.place(relx=0.345, rely=0.014, relheight=0.035, relwidth=0.104)
+        self.year1_savings_text.place(x=265, y=10, height=25, width=80)
         self.year1_savings_text.configure(background="white")
         self.year1_savings_text.configure(font="TkTextFont")
         self.year1_savings_text.configure(foreground="black")
@@ -126,7 +126,7 @@ class calc_window:
         self.year1_savings_text.configure(wrap="word")
         #
         self.year1_savings_label = tk.Label(self.data_frame)
-        self.year1_savings_label.place(relx=0.462, rely=0.014, height=24, width=55)
+        self.year1_savings_label.place(x=355, y=10, height=25, width=55)
         self.year1_savings_label.configure(activebackground="#f9f9f9")
         self.year1_savings_label.configure(anchor='w')
         self.year1_savings_label.configure(background="#d9d9d9")
@@ -138,7 +138,7 @@ class calc_window:
         self.year1_savings_label.configure(text='''Savings''')
         #
         self.year1_total_text = tk.Text(self.data_frame)
-        self.year1_total_text.place(relx=0.534, rely=0.014, relheight=0.035, relwidth=0.104)
+        self.year1_total_text.place(x=410, y=10, height=25, width=80)
         self.year1_total_text.configure(background="white")
         self.year1_total_text.configure(font="TkTextFont")
         self.year1_total_text.configure(foreground="black")
@@ -150,7 +150,7 @@ class calc_window:
         self.year1_total_text.configure(wrap="word")
         #
         self.year1_total_label = tk.Label(self.data_frame)
-        self.year1_total_label.place(relx=0.651, rely=0.014, height=24, width=66)
+        self.year1_total_label.place(x=500, y=10, height=25, width=65)
         self.year1_total_label.configure(activebackground="#f9f9f9")
         self.year1_total_label.configure(anchor='w')
         self.year1_total_label.configure(background="#d9d9d9")
@@ -162,7 +162,7 @@ class calc_window:
         self.year1_total_label.configure(text='''Year Saved''')
         #
         self.year1_full_total_text = tk.Text(self.data_frame)
-        self.year1_full_total_text.place(relx=0.749, rely=0.014, relheight=0.035, relwidth=0.104)
+        self.year1_full_total_text.place(x=575, y=10, height=25, width=80)
         self.year1_full_total_text.configure(background="white")
         self.year1_full_total_text.configure(font="TkTextFont")
         self.year1_full_total_text.configure(foreground="black")
@@ -174,7 +174,7 @@ class calc_window:
         self.year1_full_total_text.configure(wrap="word")
         #
         self.year1_full_total_label = tk.Label(self.data_frame)
-        self.year1_full_total_label.place(relx=0.866, rely=0.014, height=24, width=66)
+        self.year1_full_total_label.place(x=665, y=10, height=25, width=65)
         self.year1_full_total_label.configure(activebackground="#f9f9f9")
         self.year1_full_total_label.configure(anchor='w')
         self.year1_full_total_label.configure(background="#d9d9d9")
@@ -184,6 +184,30 @@ class calc_window:
         self.year1_full_total_label.configure(highlightbackground="#d9d9d9")
         self.year1_full_total_label.configure(highlightcolor="black")
         self.year1_full_total_label.configure(text='''Total Saved''')
+        #
+        self.year1_salary_text = tk.Text(self.data_frame)
+        self.year1_salary_text.place(x=740, y=10, height=25, width=80)
+        self.year1_salary_text.configure(background="white")
+        self.year1_salary_text.configure(font="TkTextFont")
+        self.year1_salary_text.configure(foreground="black")
+        self.year1_salary_text.configure(highlightbackground="#d9d9d9")
+        self.year1_salary_text.configure(highlightcolor="black")
+        self.year1_salary_text.configure(insertbackground="black")
+        self.year1_salary_text.configure(selectbackground="#c4c4c4")
+        self.year1_salary_text.configure(selectforeground="black")
+        self.year1_salary_text.configure(wrap="word")
+        #
+        self.year1_salary_label = tk.Label(self.data_frame)
+        self.year1_salary_label.place(x=830, y=10, height=25, width=65)
+        self.year1_salary_label.configure(activebackground="#f9f9f9")
+        self.year1_salary_label.configure(anchor='w')
+        self.year1_salary_label.configure(background="#d9d9d9")
+        self.year1_salary_label.configure(compound='left')
+        self.year1_salary_label.configure(disabledforeground="#a3a3a3")
+        self.year1_salary_label.configure(foreground="#000000")
+        self.year1_salary_label.configure(highlightbackground="#d9d9d9")
+        self.year1_salary_label.configure(highlightcolor="black")
+        self.year1_salary_label.configure(text='''Salary''')
         #
         #
         #
