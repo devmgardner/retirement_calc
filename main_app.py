@@ -456,7 +456,8 @@ class calc_window:
             new_salary_text.configure(selectbackground="#c4c4c4")
             new_salary_text.configure(selectforeground="black")
             new_salary_text.configure(wrap="word")
-            new_salary_text.insert(INSERT,(self.salary[len(self.salary.keys())]*len(self.rows)*(1+(self._raise/100))))
+            new_salary = self.salary[1] * ((1+(self._raise/100))**len(self.rows))
+            new_salary_text.insert(INSERT,locale.currency(new_salary))
             new_row['salary_text'] = new_salary_text
             #
             new_salary_label = tk.Label(self.data_frame)
