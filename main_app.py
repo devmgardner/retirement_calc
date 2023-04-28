@@ -322,8 +322,6 @@ class calc_window:
             new_401k_text.configure(selectbackground="#c4c4c4")
             new_401k_text.configure(selectforeground="black")
             new_401k_text.configure(wrap="word")
-            new_401k_amount = self._401k / 100 * self.salary[len(self.rows)+2]
-            new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
             new_row['401k_text'] = new_401k_text
             #
             new_401k_label = tk.Label(self.data_frame)
@@ -459,6 +457,8 @@ class calc_window:
             self.salary[last_year+1] = new_salary
             new_salary_text.insert(INSERT,locale.currency(new_salary,symbol=True,grouping=True))
             new_row['salary_text'] = new_salary_text
+            new_401k_amount = self._401k / 100 * self.salary[len(self.rows)+2]
+            new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
             #
             new_salary_label = tk.Label(self.data_frame)
             new_salary_label.place(x=830, y=y, height=25, width=65)
