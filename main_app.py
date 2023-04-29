@@ -57,18 +57,19 @@ class calc_window:
         #
         #
         #
+        # defining a scrollable area to place the frame
+        self.canvas_frame = tk.Frame(self.top)
+        self.main_frame = tk.Canvas(self.canvas_frame)
+        self.scroll_bar=tk.Scrollbar(self.canvas_frame,orient="vertical",command=self.main_frame.yview)
         # defining the main frame to hold all the data
-        self.data_frame = tk.Frame(self.top)
-        self.data_frame.place(relx=0.01, rely=0.008, relheight=0.976, relwidth=0.76)
+        self.data_frame = tk.Frame(self.main_frame)
+        self.data_frame.place(x=0, y=0, relheight=1, relwidth=1)
         self.data_frame.configure(relief='groove')
         self.data_frame.configure(borderwidth="2")
         self.data_frame.configure(relief="groove")
         self.data_frame.configure(background="#d9d9d9")
         self.data_frame.configure(highlightbackground="#d9d9d9")
         self.data_frame.configure(highlightcolor="black")
-        v = tk.Scrollbar(self.data_frame, orient='vertical')
-        self.data_frame.configure(yscrollcommand = v.set)
-        v.config(command=self.data_frame.yview)
         # placeholder widgets for first year calculation #
         # removed placeholders for year 1, all will be created procedurally
         #
