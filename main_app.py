@@ -482,6 +482,7 @@ class calc_window:
             new_salary_label.configure(text='''Salary''')
             new_row['salary_label'] = new_salary_label
             #
+            self.data_frame.update()
             return new_row
         #
         def place_widgets(self):
@@ -493,6 +494,7 @@ class calc_window:
             self.rows = []
             for i in range(1,self.years+1):
                 self.rows.append(create_row(self))
+            self.data_frame.update()
         # create command for updating self.data values
         def update_data(self):
             get_years(self)
