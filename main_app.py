@@ -59,11 +59,13 @@ class calc_window:
         #
         # defining a scrollable area to place the frame
         self.canvas_frame = tk.Frame(self.top)
+        self.canvas_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
         self.main_frame = tk.Canvas(self.canvas_frame)
+        self.main_frame.place(x=0, y=0, relheight=1, relwidth=1, anchor='nw')
         self.scroll_bar=tk.Scrollbar(self.canvas_frame,orient="vertical",command=self.main_frame.yview)
         # defining the main frame to hold all the data
         self.data_frame = tk.Frame(self.main_frame)
-        self.data_frame.place(x=0, y=0, relheight=1, relwidth=1)
+        self.data_frame.place(x=0, y=0, height=1, width=1)
         self.data_frame.configure(relief='groove')
         self.data_frame.configure(borderwidth="2")
         self.data_frame.configure(relief="groove")
