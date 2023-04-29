@@ -63,7 +63,8 @@ class calc_window:
         self.data_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
         self.data_frame.bind_arrow_keys(self.top)
         self.data_frame.bind_scroll_wheel(self.top)
-        self.data_frame.bind('<Configure>',self.data_frame._update_scroll_region)
+        # self.data_frame.bind('<Configure>',self.data_frame._update_scroll_region)
+        self.data_frame.bind("<Configure>", lambda e: self.data_frame.children['!canvas'].configure(scrollregion=self.data_frame.children['canvas'].bbox(ALL)))
         # the below line didn't allow the other widgets to display properly, and was removed
         # self.data_frame = self.main_frame.display_widget(tk.Frame)
         # defining the main frame to hold all the data
