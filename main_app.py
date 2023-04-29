@@ -315,12 +315,14 @@ class calc_window:
         self.savings_button.configure(text='''Update''')
         # creating blank list of rows
         self.rows = []
+        self.savings_total = 0
         # command to create a row of widgets for a year's output
         def create_row(self):
             if len(self.rows) == 0:
                 y = 10
             else:
                 y = 10 + (len(self.rows)*35)
+            year_total = 0
             new_row = {}
             new_row['y'] = y
             new_401k_text = tk.Text(self.data_frame)
@@ -468,9 +470,30 @@ class calc_window:
             last_year = max(self.salary.keys())
             self.salary[last_year+1] = new_salary
             new_salary_text.insert(INSERT,locale.currency(new_salary,symbol=True,grouping=True))
+            new_salary_text.configure(state=DISABLED)
             new_row['salary_text'] = new_salary_text
+            # process 401k calculations and update the widget
             new_401k_amount = self._401k / 100 * self.salary[len(self.rows)+2]
+            year_total += new_401k_amount
             new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
+            new_401k_text.configure(state=DISABLED)
+            # process 401k match calculations and update the widget
+            new_match_amount = self.match / 100 * self.salary[len(self.rows)+2]
+            year_total += new_match_amount
+            new_match_text.insert(INSERT,locale.currency(new_match_amount,symbol=True,grouping=True))
+            new_match_text.configure(state=DISABLED)
+            # process savings calculations and update the widget
+            new_savings_amount = self.savings / 100 * self.salary[len(self.rows)+2]
+            year_total += new_savings_amount
+            new_savings_text.insert(INSERT,locale.currency(new_savings_amount,symbol=True,grouping=True))
+            new_savings_text.configure(state=DISABLED)
+            #
+            self.savings_total += year_total
+            new_total_text.insert(INSERT,locale.currency(year_total,symbol=True,grouping=True))
+            new_total_text.configure(state=DISABLED)
+            #
+            new_full_total_text.insert(INSERT,locale.currency(self.savings_total,symbol=True,grouping=True))
+            new_full_total_text.configure(state=DISABLED)
             #
             new_salary_label = tk.Label(self.data_frame)
             new_salary_label.place(x=830, y=y, height=25, width=65)
@@ -485,9 +508,8 @@ class calc_window:
             new_salary_label.configure(text='''Salary''')
             new_row['salary_label'] = new_salary_label
             #
-            self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
-            self.data_frame.children['!canvas'].update()
-            self.data_frame._resize_interior(event=None)
+            self.data_frame.children['!canvas'].configure(height=self.data_frame.children['!canvas'].winfo_height()+35)
+            #
             return new_row
         #
         def place_widgets(self):
@@ -499,9 +521,6 @@ class calc_window:
             self.rows = []
             for i in range(1,self.years+1):
                 self.rows.append(create_row(self))
-            self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
-            self.data_frame.children['!canvas'].update()
-            self.data_frame._resize_interior(event=None)
         # create command for updating self.data values
         def update_data(self):
             get_years(self)
@@ -513,7 +532,7 @@ class calc_window:
             place_widgets(self)
             self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
             self.data_frame.children['!canvas'].update()
-            self.data_frame._resize_interior(event=None)
+            self.data_frame._resize_interior()
             # print(f'{self.years=}')
             # print(f'{self.salary=}')
             # print(f'{self._raise=}')
