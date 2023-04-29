@@ -482,6 +482,7 @@ class calc_window:
             new_salary_label.configure(text='''Salary''')
             new_row['salary_label'] = new_salary_label
             #
+            self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
             self.data_frame.children['!canvas'].update()
             self.data_frame._resize_interior(event=None)
             return new_row
@@ -495,6 +496,7 @@ class calc_window:
             self.rows = []
             for i in range(1,self.years+1):
                 self.rows.append(create_row(self))
+            self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
             self.data_frame.children['!canvas'].update()
             self.data_frame._resize_interior(event=None)
         # create command for updating self.data values
@@ -506,6 +508,7 @@ class calc_window:
             get_match(self)
             get_savings(self)
             place_widgets(self)
+            self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
             self.data_frame.children['!canvas'].update()
             self.data_frame._resize_interior(event=None)
             # print(f'{self.years=}')
