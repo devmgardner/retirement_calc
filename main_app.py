@@ -502,6 +502,7 @@ class calc_window:
             get_match(self)
             get_savings(self)
             place_widgets(self)
+            self.data_frame.update()
             # print(f'{self.years=}')
             # print(f'{self.salary=}')
             # print(f'{self._raise=}')
