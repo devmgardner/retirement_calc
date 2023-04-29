@@ -65,6 +65,7 @@ class calc_window:
         self.scroll_bar=tk.Scrollbar(self.canvas_frame,orient="vertical",command=self.main_frame.yview)
         # defining the main frame to hold all the data
         self.data_frame = tk.Frame(self.main_frame)
+        self.main_frame.create_window((0,0),window=self.data_frame,anchor='nw')
         self.data_frame.place(x=0, y=0, height=1, width=1)
         self.data_frame.configure(relief='groove')
         self.data_frame.configure(borderwidth="2")
