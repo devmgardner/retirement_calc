@@ -24,7 +24,9 @@ _tabfg2 = 'black'
 _tabbg1 = 'grey75' 
 _tabbg2 = 'grey89' 
 _bgmode = 'light' 
-
+#
+#
+# defining a scrollable frame that updates the scrollbar based on widget count
 class calc_window:
     def __init__(self, top=None):
         '''This class configures and populates the toplevel window.
@@ -59,8 +61,16 @@ class calc_window:
         #
         #
         # defining a scrollable area to place the frame
-        self.data_frame = ScrolledFrame(self.top, scrollbars='vertical')
-        self.data_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
+        self.container = ttk.Frame(self.top)
+        self.canvas = tk.Canvas(self.container)
+        self.scrollbar = ttk.Scrollbar(self.container, orient="vertical", command=self.canvas.yview)
+        self.data_frame = ttk.Frame(self.canvas)
+        self.data_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
+        self.canvas.create_window((0, 0), window=self.data_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        #
+        # self.data_frame = ScrolledFrame(self.top, scrollbars='vertical')
+        # self.data_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
         self.data_frame.bind_arrow_keys(self.top)
         self.data_frame.bind_scroll_wheel(self.top)
         # the below line didn't allow the other widgets to display properly, and was removed
