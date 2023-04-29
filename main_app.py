@@ -505,6 +505,7 @@ class calc_window:
             get_savings(self)
             place_widgets(self)
             self.data_frame.children['!canvas'].update()
+            self.data_frame.children['!canvas'].pack()
             # print(f'{self.years=}')
             # print(f'{self.salary=}')
             # print(f'{self._raise=}')
