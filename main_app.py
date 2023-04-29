@@ -59,12 +59,14 @@ class calc_window:
         #
         #
         # defining a scrollable area to place the frame
-        self.data_frame = ScrolledFrame(self.top)
+        self.data_frame = ScrolledFrame(self.top, scrollbars='vertical')
         self.data_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
         self.data_frame.bind_arrow_keys(self.top)
         self.data_frame.bind_scroll_wheel(self.top)
+        # the below line didn't allow the other widgets to display properly, and was removed
         # self.data_frame = self.main_frame.display_widget(tk.Frame)
         # defining the main frame to hold all the data
+        # the below 2 lines were used to create the main self.data_frame, but have been replaced with a scrollable frame
         # self.data_frame = tk.Frame(self.top)
         # self.data_frame.place(x=0, y=0, height=1, width=1)
         self.data_frame.configure(relief='groove')
