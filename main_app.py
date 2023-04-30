@@ -5,8 +5,10 @@
 #  in conjunction with Tcl version 8.6
 #    Apr 24, 2023 04:41:17 PM EDT  platform: Windows NT
 
-import os, sys
-import tkinter as tk
+import os, sys, openpyxl
+import customtkinter as tk
+from tkinter import Menu
+from tkinter.filedialog import asksaveasfilename
 import tkinter.ttk as ttk
 from tkinter.constants import *
 import support
@@ -25,6 +27,13 @@ _tabbg1 = 'grey75'
 _tabbg2 = 'grey89' 
 _bgmode = 'light' 
 #
+# defining resource_path function for after compile
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(base_path, relative_path)
 #
 # defining a scrollable frame that updates the scrollbar based on widget count
 class calc_window:
@@ -43,9 +52,9 @@ class calc_window:
 
         self.top = top
         # defining the menu bar and menu option
-        self.menubar = tk.Menu(top,font="TkMenuFont",bg=_bgcolor,fg=_fgcolor)
+        self.menubar = Menu(top,font="TkMenuFont",bg=_bgcolor,fg=_fgcolor)
         top.configure(menu = self.menubar)
-        self.sub_menu = tk.Menu(self.menubar,
+        self.sub_menu = Menu(self.menubar,
                 activebackground='#ececec',
                 activeborderwidth=1,
                 activeforeground='#000000',
@@ -55,267 +64,293 @@ class calc_window:
                 foreground='#000000',
                 tearoff=0)
         self.menubar.add_cascade(label='Reports',menu=self.sub_menu,)
-        self.sub_menu.add_command(label='Save Report')
         #
         #
         #
         #
         # defining a scrollable area to place the frame
         #
-        self.data_frame = ScrolledFrame(self.top, scrollbars='vertical')
-        self.data_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
-        self.data_frame.bind_arrow_keys(self.top)
-        self.data_frame.bind_scroll_wheel(self.top)
+        self.canvas = tk.CTkCanvas(self.top)
+        self.canvas.place(x=10,y=10,relheight=0.976,relwidth=0.815)
+        self.data_frame = tk.CTkFrame(self.canvas)
+        # removed when converting to customtkinter
+        # self.data_frame.configure(relief='groove')
+        # self.data_frame.configure(borderwidth="2")
+        # self.data_frame.configure(relief="groove")
+        # self.data_frame.configure(background="#d9d9d9")
+        # self.data_frame.configure(highlightbackground="#d9d9d9")
+        # self.data_frame.configure(highlightcolor="black")
+        self.data_frame.configure(width=1043)
+        self.data_frame.configure(height=750)
+        self.data_frame_id = self.canvas.create_window(0,0,window=self.data_frame,anchor='nw')
+        # removed defunct tkscrolledframe lines
+        # self.data_frame = ScrolledFrame(self.top, scrollbars='vertical')
+        # self.data_frame.place(x=10, y=10, relheight=0.976, relwidth=0.76)
+        # self.data_frame.bind_arrow_keys(self.top)
+        # self.data_frame.bind_scroll_wheel(self.top)
         # the below line didn't allow the other widgets to display properly, and was removed
         # self.data_frame = self.main_frame.display_widget(tk.Frame)
         # defining the main frame to hold all the data
         # the below 2 lines were used to create the main self.data_frame, but have been replaced with a scrollable frame
         # self.data_frame = tk.Frame(self.top)
         # self.data_frame.place(x=0, y=0, height=1, width=1)
-        self.data_frame.configure(relief='groove')
-        self.data_frame.configure(borderwidth="2")
-        self.data_frame.configure(relief="groove")
-        self.data_frame.configure(background="#d9d9d9")
-        self.data_frame.configure(highlightbackground="#d9d9d9")
-        self.data_frame.configure(highlightcolor="black")
         # placeholder widgets for first year calculation #
         # removed placeholders for year 1, all will be created procedurally
         #
         #
         #
         # defining the entry widgets and buttons
-        self.years_entry = tk.Entry(self.top)
-        self.years_entry.place(relx=0.775, rely=0.008, height=20, relwidth=0.073)
-        self.years_entry.configure(background="white")
-        self.years_entry.configure(disabledforeground="#a3a3a3")
-        self.years_entry.configure(font="TkFixedFont")
-        self.years_entry.configure(foreground="#000000")
-        self.years_entry.configure(highlightbackground="#d9d9d9")
-        self.years_entry.configure(highlightcolor="black")
-        self.years_entry.configure(insertbackground="black")
-        self.years_entry.configure(selectbackground="#c4c4c4")
-        self.years_entry.configure(selectforeground="black")
+        self.years_entry = tk.CTkEntry(self.top, height=20, width=65)
+        self.years_entry.place(relx=0.835, rely=0.008)
+        # removed when converting to customtkinter
+        # self.years_entry.configure(background="white")
+        # self.years_entry.configure(disabledforeground="#a3a3a3")
+        # self.years_entry.configure(font="TkFixedFont")
+        # self.years_entry.configure(foreground="#000000")
+        # self.years_entry.configure(highlightbackground="#d9d9d9")
+        # self.years_entry.configure(highlightcolor="black")
+        # self.years_entry.configure(insertbackground="black")
+        # self.years_entry.configure(selectbackground="#c4c4c4")
+        # self.years_entry.configure(selectforeground="black")
         #
         def get_years(self):
             self.years = int(self.years_entry.get())
         #
-        self.years_label = tk.Label(self.top)
-        self.years_label.place(relx=0.862, rely=0.008, height=19, width=31)
-        self.years_label.configure(activebackground="#f9f9f9")
-        self.years_label.configure(activeforeground="black")
-        self.years_label.configure(background="#d9d9d9")
-        self.years_label.configure(disabledforeground="#a3a3a3")
-        self.years_label.configure(foreground="#000000")
-        self.years_label.configure(highlightbackground="#d9d9d9")
-        self.years_label.configure(highlightcolor="black")
+        self.years_label = tk.CTkLabel(self.top, height=20, width=31)
+        self.years_label.place(relx=0.895, rely=0.008)
+        # removed when converting to customtkinter
+        # self.years_label.configure(activebackground="#f9f9f9")
+        # self.years_label.configure(activeforeground="black")
+        # self.years_label.configure(background="#d9d9d9")
+        # self.years_label.configure(disabledforeground="#a3a3a3")
+        # self.years_label.configure(foreground="#000000")
+        # self.years_label.configure(highlightbackground="#d9d9d9")
+        # self.years_label.configure(highlightcolor="black")
         self.years_label.configure(text='''Years''')
         #
-        self.years_button = tk.Button(self.top)
-        self.years_button.place(relx=0.91, rely=0.008, height=20, width=65)
-        self.years_button.configure(activebackground="#ececec")
-        self.years_button.configure(activeforeground="#000000")
-        self.years_button.configure(background="#d9d9d9")
-        self.years_button.configure(disabledforeground="#a3a3a3")
-        self.years_button.configure(foreground="#000000")
-        self.years_button.configure(highlightbackground="#d9d9d9")
-        self.years_button.configure(highlightcolor="black")
-        self.years_button.configure(pady="0")
+        self.years_button = tk.CTkButton(self.top, height=20, width=65)
+        self.years_button.place(relx=0.94, rely=0.008)
+        # removed when converting to customtkinter
+        # self.years_button.configure(activebackground="#ececec")
+        # self.years_button.configure(activeforeground="#000000")
+        # self.years_button.configure(background="#d9d9d9")
+        # self.years_button.configure(disabledforeground="#a3a3a3")
+        # self.years_button.configure(foreground="#000000")
+        # self.years_button.configure(highlightbackground="#d9d9d9")
+        # self.years_button.configure(highlightcolor="black")
+        # self.years_button.configure(pady="0")
         self.years_button.configure(text='''Update''')
         #
         #
-        self.salary_entry = tk.Entry(self.top)
-        self.salary_entry.place(relx=0.775, rely=0.054, height=20, relwidth=0.073)
-        self.salary_entry.configure(background="white")
-        self.salary_entry.configure(disabledforeground="#a3a3a3")
-        self.salary_entry.configure(font="TkFixedFont")
-        self.salary_entry.configure(foreground="#000000")
-        self.salary_entry.configure(highlightbackground="#d9d9d9")
-        self.salary_entry.configure(highlightcolor="black")
-        self.salary_entry.configure(insertbackground="black")
-        self.salary_entry.configure(selectbackground="blue")
-        self.salary_entry.configure(selectforeground="white")
+        self.salary_entry = tk.CTkEntry(self.top, height=20, width=65)
+        self.salary_entry.place(relx=0.835, rely=0.054)
+        # removed when converting to customtkinter
+        # self.salary_entry.configure(background="white")
+        # self.salary_entry.configure(disabledforeground="#a3a3a3")
+        # self.salary_entry.configure(font="TkFixedFont")
+        # self.salary_entry.configure(foreground="#000000")
+        # self.salary_entry.configure(highlightbackground="#d9d9d9")
+        # self.salary_entry.configure(highlightcolor="black")
+        # self.salary_entry.configure(insertbackground="black")
+        # self.salary_entry.configure(selectbackground="blue")
+        # self.salary_entry.configure(selectforeground="white")
         #
         def get_salary(self):
             self.salary = {}
             self.salary[1] = float(self.salary_entry.get())
         #
-        self.salary_label = tk.Label(self.top)
-        self.salary_label.place(relx=0.862, rely=0.054, height=19, width=35)
-        self.salary_label.configure(activebackground="#f9f9f9")
-        self.salary_label.configure(activeforeground="black")
-        self.salary_label.configure(background="#d9d9d9")
-        self.salary_label.configure(disabledforeground="#a3a3a3")
-        self.salary_label.configure(foreground="#000000")
-        self.salary_label.configure(highlightbackground="#d9d9d9")
-        self.salary_label.configure(highlightcolor="black")
+        self.salary_label = tk.CTkLabel(self.top, height=20, width=35)
+        self.salary_label.place(relx=0.895, rely=0.054)
+        # removed when converting to customtkinter
+        # self.salary_label.configure(activebackground="#f9f9f9")
+        # self.salary_label.configure(activeforeground="black")
+        # self.salary_label.configure(background="#d9d9d9")
+        # self.salary_label.configure(disabledforeground="#a3a3a3")
+        # self.salary_label.configure(foreground="#000000")
+        # self.salary_label.configure(highlightbackground="#d9d9d9")
+        # self.salary_label.configure(highlightcolor="black")
         self.salary_label.configure(text='''Salary''')
         #
-        self.salary_button = tk.Button(self.top)
-        self.salary_button.place(relx=0.91, rely=0.054, height=20, width=65)
-        self.salary_button.configure(activebackground="#ececec")
-        self.salary_button.configure(activeforeground="#000000")
-        self.salary_button.configure(background="#d9d9d9")
-        self.salary_button.configure(disabledforeground="#a3a3a3")
-        self.salary_button.configure(foreground="#000000")
-        self.salary_button.configure(highlightbackground="#d9d9d9")
-        self.salary_button.configure(highlightcolor="black")
-        self.salary_button.configure(pady="0")
+        self.salary_button = tk.CTkButton(self.top, height=20, width=65)
+        self.salary_button.place(relx=0.94, rely=0.054)
+        # removed when converting to customtkinter
+        # self.salary_button.configure(activebackground="#ececec")
+        # self.salary_button.configure(activeforeground="#000000")
+        # self.salary_button.configure(background="#d9d9d9")
+        # self.salary_button.configure(disabledforeground="#a3a3a3")
+        # self.salary_button.configure(foreground="#000000")
+        # self.salary_button.configure(highlightbackground="#d9d9d9")
+        # self.salary_button.configure(highlightcolor="black")
+        # self.salary_button.configure(pady="0")
         self.salary_button.configure(text='''Update''')
         #
-        self.raise_entry = tk.Entry(self.top)
-        self.raise_entry.place(relx=0.775, rely=0.097, height=20, relwidth=0.073)
-        self.raise_entry.configure(background="white")
-        self.raise_entry.configure(disabledforeground="#a3a3a3")
-        self.raise_entry.configure(font="TkFixedFont")
-        self.raise_entry.configure(foreground="#000000")
-        self.raise_entry.configure(highlightbackground="#d9d9d9")
-        self.raise_entry.configure(highlightcolor="black")
-        self.raise_entry.configure(insertbackground="black")
-        self.raise_entry.configure(selectbackground="blue")
-        self.raise_entry.configure(selectforeground="white")
+        self.raise_entry = tk.CTkEntry(self.top, height=20, width=65)
+        self.raise_entry.place(relx=0.835, rely=0.097)
+        # removed when converting to customtkinter
+        # self.raise_entry.configure(background="white")
+        # self.raise_entry.configure(disabledforeground="#a3a3a3")
+        # self.raise_entry.configure(font="TkFixedFont")
+        # self.raise_entry.configure(foreground="#000000")
+        # self.raise_entry.configure(highlightbackground="#d9d9d9")
+        # self.raise_entry.configure(highlightcolor="black")
+        # self.raise_entry.configure(insertbackground="black")
+        # self.raise_entry.configure(selectbackground="blue")
+        # self.raise_entry.configure(selectforeground="white")
         #
         def get_raise(self):
             self._raise = float(self.raise_entry.get())
         #
-        self.raise_label = tk.Label(self.top)
-        self.raise_label.place(relx=0.862, rely=0.097, height=19, width=35)
-        self.raise_label.configure(activebackground="#f9f9f9")
-        self.raise_label.configure(activeforeground="black")
-        self.raise_label.configure(background="#d9d9d9")
-        self.raise_label.configure(disabledforeground="#a3a3a3")
-        self.raise_label.configure(foreground="#000000")
-        self.raise_label.configure(highlightbackground="#d9d9d9")
-        self.raise_label.configure(highlightcolor="black")
+        self.raise_label = tk.CTkLabel(self.top, height=20, width=35)
+        self.raise_label.place(relx=0.895, rely=0.097)
+        # removed when converting to customtkinter
+        # self.raise_label.configure(activebackground="#f9f9f9")
+        # self.raise_label.configure(activeforeground="black")
+        # self.raise_label.configure(background="#d9d9d9")
+        # self.raise_label.configure(disabledforeground="#a3a3a3")
+        # self.raise_label.configure(foreground="#000000")
+        # self.raise_label.configure(highlightbackground="#d9d9d9")
+        # self.raise_label.configure(highlightcolor="black")
         self.raise_label.configure(text='''Raise''')
         #
-        self.raise_button = tk.Button(self.top)
-        self.raise_button.place(relx=0.91, rely=0.097, height=20, width=65)
-        self.raise_button.configure(activebackground="#ececec")
-        self.raise_button.configure(activeforeground="#000000")
-        self.raise_button.configure(background="#d9d9d9")
-        self.raise_button.configure(disabledforeground="#a3a3a3")
-        self.raise_button.configure(foreground="#000000")
-        self.raise_button.configure(highlightbackground="#d9d9d9")
-        self.raise_button.configure(highlightcolor="black")
-        self.raise_button.configure(pady="0")
+        self.raise_button = tk.CTkButton(self.top, height=20, width=65)
+        self.raise_button.place(relx=0.94, rely=0.097)
+        # removed when converting to customtkinter
+        # self.raise_button.configure(activebackground="#ececec")
+        # self.raise_button.configure(activeforeground="#000000")
+        # self.raise_button.configure(background="#d9d9d9")
+        # self.raise_button.configure(disabledforeground="#a3a3a3")
+        # self.raise_button.configure(foreground="#000000")
+        # self.raise_button.configure(highlightbackground="#d9d9d9")
+        # self.raise_button.configure(highlightcolor="black")
+        # self.raise_button.configure(pady="0")
         self.raise_button.configure(text='''Update''')
         #
-        self._401k_entry = tk.Entry(self.top)
-        self._401k_entry.place(relx=0.775, rely=0.141, height=20, relwidth=0.073)
-        self._401k_entry.configure(background="white")
-        self._401k_entry.configure(disabledforeground="#a3a3a3")
-        self._401k_entry.configure(font="TkFixedFont")
-        self._401k_entry.configure(foreground="#000000")
-        self._401k_entry.configure(highlightbackground="#d9d9d9")
-        self._401k_entry.configure(highlightcolor="black")
-        self._401k_entry.configure(insertbackground="black")
-        self._401k_entry.configure(selectbackground="blue")
-        self._401k_entry.configure(selectforeground="white")
+        self._401k_entry = tk.CTkEntry(self.top, height=20, width=65)
+        self._401k_entry.place(relx=0.835, rely=0.141)
+        # removed when converting to customtkinter
+        # self._401k_entry.configure(background="white")
+        # self._401k_entry.configure(disabledforeground="#a3a3a3")
+        # self._401k_entry.configure(font="TkFixedFont")
+        # self._401k_entry.configure(foreground="#000000")
+        # self._401k_entry.configure(highlightbackground="#d9d9d9")
+        # self._401k_entry.configure(highlightcolor="black")
+        # self._401k_entry.configure(insertbackground="black")
+        # self._401k_entry.configure(selectbackground="blue")
+        # self._401k_entry.configure(selectforeground="white")
         #
         def get_401k(self):
             self._401k = float(self._401k_entry.get())
         #
-        self._401k_label = tk.Label(self.top)
-        self._401k_label.place(relx=0.862, rely=0.141, height=18, width=35)
-        self._401k_label.configure(activebackground="#f9f9f9")
-        self._401k_label.configure(activeforeground="black")
-        self._401k_label.configure(background="#d9d9d9")
-        self._401k_label.configure(disabledforeground="#a3a3a3")
-        self._401k_label.configure(foreground="#000000")
-        self._401k_label.configure(highlightbackground="#d9d9d9")
-        self._401k_label.configure(highlightcolor="black")
+        self._401k_label = tk.CTkLabel(self.top, height=20, width=35)
+        self._401k_label.place(relx=0.895, rely=0.141)
+        # removed when converting to customtkinter
+        # self._401k_label.configure(activebackground="#f9f9f9")
+        # self._401k_label.configure(activeforeground="black")
+        # self._401k_label.configure(background="#d9d9d9")
+        # self._401k_label.configure(disabledforeground="#a3a3a3")
+        # self._401k_label.configure(foreground="#000000")
+        # self._401k_label.configure(highlightbackground="#d9d9d9")
+        # self._401k_label.configure(highlightcolor="black")
         self._401k_label.configure(text='''401k''')
         #
-        self._401k_button = tk.Button(self.top)
-        self._401k_button.place(relx=0.91, rely=0.141, height=20, width=65)
-        self._401k_button.configure(activebackground="#ececec")
-        self._401k_button.configure(activeforeground="#000000")
-        self._401k_button.configure(background="#d9d9d9")
-        self._401k_button.configure(disabledforeground="#a3a3a3")
-        self._401k_button.configure(foreground="#000000")
-        self._401k_button.configure(highlightbackground="#d9d9d9")
-        self._401k_button.configure(highlightcolor="black")
-        self._401k_button.configure(pady="0")
+        self._401k_button = tk.CTkButton(self.top, height=20, width=65)
+        self._401k_button.place(relx=0.94, rely=0.141)
+        # removed when converting to customtkinter
+        # self._401k_button.configure(activebackground="#ececec")
+        # self._401k_button.configure(activeforeground="#000000")
+        # self._401k_button.configure(background="#d9d9d9")
+        # self._401k_button.configure(disabledforeground="#a3a3a3")
+        # self._401k_button.configure(foreground="#000000")
+        # self._401k_button.configure(highlightbackground="#d9d9d9")
+        # self._401k_button.configure(highlightcolor="black")
+        # self._401k_button.configure(pady="0")
         self._401k_button.configure(text='''Update''')
         #
-        self.match_entry = tk.Entry(self.top)
-        self.match_entry.place(relx=0.775, rely=0.185, height=20, relwidth=0.073)
-        self.match_entry.configure(background="white")
-        self.match_entry.configure(disabledforeground="#a3a3a3")
-        self.match_entry.configure(font="TkFixedFont")
-        self.match_entry.configure(foreground="#000000")
-        self.match_entry.configure(highlightbackground="#d9d9d9")
-        self.match_entry.configure(highlightcolor="black")
-        self.match_entry.configure(insertbackground="black")
-        self.match_entry.configure(selectbackground="blue")
-        self.match_entry.configure(selectforeground="white")
+        self.match_entry = tk.CTkEntry(self.top, height=20, width=65)
+        self.match_entry.place(relx=0.835, rely=0.185)
+        # removed when converting to customtkinter
+        # self.match_entry.configure(background="white")
+        # self.match_entry.configure(disabledforeground="#a3a3a3")
+        # self.match_entry.configure(font="TkFixedFont")
+        # self.match_entry.configure(foreground="#000000")
+        # self.match_entry.configure(highlightbackground="#d9d9d9")
+        # self.match_entry.configure(highlightcolor="black")
+        # self.match_entry.configure(insertbackground="black")
+        # self.match_entry.configure(selectbackground="blue")
+        # self.match_entry.configure(selectforeground="white")
         #
         def get_match(self):
             self.match = float(self.match_entry.get())
         #
-        self.match_label = tk.Label(self.top)
-        self.match_label.place(relx=0.862, rely=0.185, height=18, width=35)
-        self.match_label.configure(activebackground="#f9f9f9")
-        self.match_label.configure(activeforeground="black")
-        self.match_label.configure(background="#d9d9d9")
-        self.match_label.configure(disabledforeground="#a3a3a3")
-        self.match_label.configure(foreground="#000000")
-        self.match_label.configure(highlightbackground="#d9d9d9")
-        self.match_label.configure(highlightcolor="black")
+        self.match_label = tk.CTkLabel(self.top, height=20, width=35)
+        self.match_label.place(relx=0.895, rely=0.185)
+        # removed when converting to customtkinter
+        # self.match_label.configure(activebackground="#f9f9f9")
+        # self.match_label.configure(activeforeground="black")
+        # self.match_label.configure(background="#d9d9d9")
+        # self.match_label.configure(disabledforeground="#a3a3a3")
+        # self.match_label.configure(foreground="#000000")
+        # self.match_label.configure(highlightbackground="#d9d9d9")
+        # self.match_label.configure(highlightcolor="black")
         self.match_label.configure(text='''Match''')
         #
-        self.match_button = tk.Button(self.top)
-        self.match_button.place(relx=0.91, rely=0.185, height=20, width=65)
-        self.match_button.configure(activebackground="#ececec")
-        self.match_button.configure(activeforeground="#000000")
-        self.match_button.configure(background="#d9d9d9")
-        self.match_button.configure(disabledforeground="#a3a3a3")
-        self.match_button.configure(foreground="#000000")
-        self.match_button.configure(highlightbackground="#d9d9d9")
-        self.match_button.configure(highlightcolor="black")
-        self.match_button.configure(pady="0")
+        self.match_button = tk.CTkButton(self.top, height=20, width=65)
+        self.match_button.place(relx=0.94, rely=0.185)
+        # removed when converting to customtkinter
+        # self.match_button.configure(activebackground="#ececec")
+        # self.match_button.configure(activeforeground="#000000")
+        # self.match_button.configure(background="#d9d9d9")
+        # self.match_button.configure(disabledforeground="#a3a3a3")
+        # self.match_button.configure(foreground="#000000")
+        # self.match_button.configure(highlightbackground="#d9d9d9")
+        # self.match_button.configure(highlightcolor="black")
+        # self.match_button.configure(pady="0")
         self.match_button.configure(text='''Update''')
         #
-        self.savings_entry = tk.Entry(self.top)
-        self.savings_entry.place(relx=0.775, rely=0.229, height=20, relwidth=0.073)
-        self.savings_entry.configure(background="white")
-        self.savings_entry.configure(disabledforeground="#a3a3a3")
-        self.savings_entry.configure(font="TkFixedFont")
-        self.savings_entry.configure(foreground="#000000")
-        self.savings_entry.configure(highlightbackground="#d9d9d9")
-        self.savings_entry.configure(highlightcolor="black")
-        self.savings_entry.configure(insertbackground="black")
-        self.savings_entry.configure(selectbackground="blue")
-        self.savings_entry.configure(selectforeground="white")
+        self.savings_entry = tk.CTkEntry(self.top, height=20, width=65)
+        self.savings_entry.place(relx=0.835, rely=0.229)
+        # removed when converting to customtkinter
+        # self.savings_entry.configure(background="white")
+        # self.savings_entry.configure(disabledforeground="#a3a3a3")
+        # self.savings_entry.configure(font="TkFixedFont")
+        # self.savings_entry.configure(foreground="#000000")
+        # self.savings_entry.configure(highlightbackground="#d9d9d9")
+        # self.savings_entry.configure(highlightcolor="black")
+        # self.savings_entry.configure(insertbackground="black")
+        # self.savings_entry.configure(selectbackground="blue")
+        # self.savings_entry.configure(selectforeground="white")
         #
         def get_savings(self):
             self.savings = float(self.savings_entry.get())
         #
-        self.savings_label = tk.Label(self.top)
-        self.savings_label.place(relx=0.859, rely=0.229, height=19, width=45)
-        self.savings_label.configure(activebackground="#f9f9f9")
-        self.savings_label.configure(activeforeground="black")
-        self.savings_label.configure(background="#d9d9d9")
-        self.savings_label.configure(disabledforeground="#a3a3a3")
-        self.savings_label.configure(foreground="#000000")
-        self.savings_label.configure(highlightbackground="#d9d9d9")
-        self.savings_label.configure(highlightcolor="black")
+        self.savings_label = tk.CTkLabel(self.top, height=20, width=45)
+        self.savings_label.place(relx=0.892, rely=0.229)
+        # removed when converting to customtkinter
+        # self.savings_label.configure(activebackground="#f9f9f9")
+        # self.savings_label.configure(activeforeground="black")
+        # self.savings_label.configure(background="#d9d9d9")
+        # self.savings_label.configure(disabledforeground="#a3a3a3")
+        # self.savings_label.configure(foreground="#000000")
+        # self.savings_label.configure(highlightbackground="#d9d9d9")
+        # self.savings_label.configure(highlightcolor="black")
         self.savings_label.configure(text='''Savings''')
         #
-        self.savings_button = tk.Button(self.top)
-        self.savings_button.place(relx=0.91, rely=0.229, height=20, width=65)
-        self.savings_button.configure(activebackground="#ececec")
-        self.savings_button.configure(activeforeground="#000000")
-        self.savings_button.configure(background="#d9d9d9")
-        self.savings_button.configure(disabledforeground="#a3a3a3")
-        self.savings_button.configure(foreground="#000000")
-        self.savings_button.configure(highlightbackground="#d9d9d9")
-        self.savings_button.configure(highlightcolor="black")
-        self.savings_button.configure(pady="0")
+        self.savings_button = tk.CTkButton(self.top, height=20, width=65)
+        self.savings_button.place(relx=0.94, rely=0.229)
+        # removed when converting to customtkinter
+        # self.savings_button.configure(activebackground="#ececec")
+        # self.savings_button.configure(activeforeground="#000000")
+        # self.savings_button.configure(background="#d9d9d9")
+        # self.savings_button.configure(disabledforeground="#a3a3a3")
+        # self.savings_button.configure(foreground="#000000")
+        # self.savings_button.configure(highlightbackground="#d9d9d9")
+        # self.savings_button.configure(highlightcolor="black")
+        # self.savings_button.configure(pady="0")
         self.savings_button.configure(text='''Update''')
         # creating blank list of rows
         self.rows = []
         self.savings_total = 0
+        self.finances = {}
         # command to create a row of widgets for a year's output
         def create_row(self):
             if len(self.rows) == 0:
@@ -325,150 +360,184 @@ class calc_window:
             year_total = 0
             new_row = {}
             new_row['y'] = y
-            new_401k_text = tk.Text(self.data_frame)
-            new_401k_text.place(x=10, y=y, height=25, width=80)
-            new_401k_text.configure(background="white")
-            new_401k_text.configure(font="TkTextFont")
-            new_401k_text.configure(foreground="black")
-            new_401k_text.configure(highlightbackground="#d9d9d9")
-            new_401k_text.configure(highlightcolor="black")
-            new_401k_text.configure(insertbackground="black")
-            new_401k_text.configure(selectbackground="#c4c4c4")
-            new_401k_text.configure(selectforeground="black")
-            new_401k_text.configure(wrap="word")
-            new_row['401k_text'] = new_401k_text
             #
-            new_401k_label = tk.Label(self.data_frame)
-            new_401k_label.place(x=100, y=y, height=25, width=35)
-            new_401k_label.configure(activebackground="#f9f9f9")
+            new_401k_label = tk.CTkLabel(self.data_frame, height=25, width=35)
+            new_401k_label.place(x=230, y=y)
+            # removed when converting to customtkinter
+            # new_401k_label.configure(activebackground="#f9f9f9")
             new_401k_label.configure(anchor='w')
-            new_401k_label.configure(background="#d9d9d9")
-            new_401k_label.configure(compound='left')
-            new_401k_label.configure(disabledforeground="#a3a3a3")
-            new_401k_label.configure(foreground="#000000")
-            new_401k_label.configure(highlightbackground="#d9d9d9")
-            new_401k_label.configure(highlightcolor="black")
+            # removed when converting to customtkinter
+            # new_401k_label.configure(background="#d9d9d9")
+            # new_401k_label.configure(compound='left')
+            # new_401k_label.configure(disabledforeground="#a3a3a3")
+            # new_401k_label.configure(foreground="#000000")
+            # new_401k_label.configure(highlightbackground="#d9d9d9")
+            # new_401k_label.configure(highlightcolor="black")
             new_401k_label.configure(text='''401k''')
             new_row['401k_label'] = new_401k_label
             #
-            new_match_text = tk.Text(self.data_frame)
-            new_match_text.place(x=140, y=y, height=25, width=65)
-            new_match_text.configure(background="white")
-            new_match_text.configure(font="TkTextFont")
-            new_match_text.configure(foreground="black")
-            new_match_text.configure(highlightbackground="#d9d9d9")
-            new_match_text.configure(highlightcolor="black")
-            new_match_text.configure(insertbackground="black")
-            new_match_text.configure(selectbackground="#c4c4c4")
-            new_match_text.configure(selectforeground="black")
-            new_match_text.configure(wrap="word")
-            new_row['match_text'] = new_match_text
+            new_401k_text = tk.CTkTextbox(self.data_frame, height=25, width=85)
+            new_401k_text.place(x=270, y=y)
+            # removed when converting to customtkinter
+            # new_401k_text.configure(background="white")
+            # new_401k_text.configure(font="TkTextFont")
+            # new_401k_text.configure(foreground="black")
+            # new_401k_text.configure(highlightbackground="#d9d9d9")
+            # new_401k_text.configure(highlightcolor="black")
+            # new_401k_text.configure(insertbackground="black")
+            # new_401k_text.configure(selectbackground="#c4c4c4")
+            # new_401k_text.configure(selectforeground="black")
+            # new_401k_text.configure(wrap="word")
+            new_row['401k_text'] = new_401k_text
             #
-            new_match_label = tk.Label(self.data_frame)
-            new_match_label.place(x=215, y=y, height=25, width=50)
-            new_match_label.configure(activebackground="#f9f9f9")
+            new_match_label = tk.CTkLabel(self.data_frame, height=25, width=50)
+            new_match_label.place(x=365, y=y)
+            # removed when converting to customtkinter
+            # new_match_label.configure(activebackground="#f9f9f9")
             new_match_label.configure(anchor='w')
-            new_match_label.configure(background="#d9d9d9")
-            new_match_label.configure(compound='left')
-            new_match_label.configure(disabledforeground="#a3a3a3")
-            new_match_label.configure(foreground="#000000")
-            new_match_label.configure(highlightbackground="#d9d9d9")
-            new_match_label.configure(highlightcolor="black")
+            # removed when converting to customtkinter
+            # new_match_label.configure(background="#d9d9d9")
+            # new_match_label.configure(compound='left')
+            # new_match_label.configure(disabledforeground="#a3a3a3")
+            # new_match_label.configure(foreground="#000000")
+            # new_match_label.configure(highlightbackground="#d9d9d9")
+            # new_match_label.configure(highlightcolor="black")
             new_match_label.configure(text='''Match''')
             new_row['match_label'] = new_match_label
             #
-            new_savings_text = tk.Text(self.data_frame)
-            new_savings_text.place(x=265, y=y, height=25, width=80)
-            new_savings_text.configure(background="white")
-            new_savings_text.configure(font="TkTextFont")
-            new_savings_text.configure(foreground="black")
-            new_savings_text.configure(highlightbackground="#d9d9d9")
-            new_savings_text.configure(highlightcolor="black")
-            new_savings_text.configure(insertbackground="black")
-            new_savings_text.configure(selectbackground="#c4c4c4")
-            new_savings_text.configure(selectforeground="black")
-            new_savings_text.configure(wrap="word")
-            new_row['savings_text'] = new_savings_text
+            new_match_text = tk.CTkTextbox(self.data_frame, height=25, width=80)
+            new_match_text.place(x=415, y=y)
+            # removed when converting to customtkinter
+            # new_match_text.configure(background="white")
+            # new_match_text.configure(font="TkTextFont")
+            # new_match_text.configure(foreground="black")
+            # new_match_text.configure(highlightbackground="#d9d9d9")
+            # new_match_text.configure(highlightcolor="black")
+            # new_match_text.configure(insertbackground="black")
+            # new_match_text.configure(selectbackground="#c4c4c4")
+            # new_match_text.configure(selectforeground="black")
+            # new_match_text.configure(wrap="word")
+            new_row['match_text'] = new_match_text
             #
-            new_savings_label = tk.Label(self.data_frame)
-            new_savings_label.place(x=355, y=y, height=25, width=55)
-            new_savings_label.configure(activebackground="#f9f9f9")
+            new_savings_label = tk.CTkLabel(self.data_frame, height=25, width=55)
+            new_savings_label.place(x=505, y=y)
+            # removed when converting to customtkinter
+            # new_savings_label.configure(activebackground="#f9f9f9")
             new_savings_label.configure(anchor='w')
-            new_savings_label.configure(background="#d9d9d9")
-            new_savings_label.configure(compound='left')
-            new_savings_label.configure(disabledforeground="#a3a3a3")
-            new_savings_label.configure(foreground="#000000")
-            new_savings_label.configure(highlightbackground="#d9d9d9")
-            new_savings_label.configure(highlightcolor="black")
+            # removed when converting to customtkinter
+            # new_savings_label.configure(background="#d9d9d9")
+            # new_savings_label.configure(compound='left')
+            # new_savings_label.configure(disabledforeground="#a3a3a3")
+            # new_savings_label.configure(foreground="#000000")
+            # new_savings_label.configure(highlightbackground="#d9d9d9")
+            # new_savings_label.configure(highlightcolor="black")
             new_savings_label.configure(text='''Savings''')
             new_row['savings_label'] = new_savings_label
             #
-            new_total_text = tk.Text(self.data_frame)
-            new_total_text.place(x=410, y=y, height=25, width=80)
-            new_total_text.configure(background="white")
-            new_total_text.configure(font="TkTextFont")
-            new_total_text.configure(foreground="black")
-            new_total_text.configure(highlightbackground="#d9d9d9")
-            new_total_text.configure(highlightcolor="black")
-            new_total_text.configure(insertbackground="black")
-            new_total_text.configure(selectbackground="#c4c4c4")
-            new_total_text.configure(selectforeground="black")
-            new_total_text.configure(wrap="word")
-            new_row['total_text'] = new_total_text
+            new_savings_text = tk.CTkTextbox(self.data_frame, height=25, width=85)
+            new_savings_text.place(x=565, y=y)
+            # removed when converting to customtkinter
+            # new_savings_text.configure(background="white")
+            # new_savings_text.configure(font="TkTextFont")
+            # new_savings_text.configure(foreground="black")
+            # new_savings_text.configure(highlightbackground="#d9d9d9")
+            # new_savings_text.configure(highlightcolor="black")
+            # new_savings_text.configure(insertbackground="black")
+            # new_savings_text.configure(selectbackground="#c4c4c4")
+            # new_savings_text.configure(selectforeground="black")
+            # new_savings_text.configure(wrap="word")
+            new_row['savings_text'] = new_savings_text
             #
-            new_total_label = tk.Label(self.data_frame)
-            new_total_label.place(x=500, y=y, height=25, width=65)
-            new_total_label.configure(activebackground="#f9f9f9")
+            new_total_label = tk.CTkLabel(self.data_frame, height=25, width=65)
+            new_total_label.place(x=660, y=y)
+            # removed when converting to customtkinter
+            # new_total_label.configure(activebackground="#f9f9f9")
             new_total_label.configure(anchor='w')
-            new_total_label.configure(background="#d9d9d9")
-            new_total_label.configure(compound='left')
-            new_total_label.configure(disabledforeground="#a3a3a3")
-            new_total_label.configure(foreground="#000000")
-            new_total_label.configure(highlightbackground="#d9d9d9")
-            new_total_label.configure(highlightcolor="black")
+            # removed when converting to customtkinter
+            # new_total_label.configure(background="#d9d9d9")
+            # new_total_label.configure(compound='left')
+            # new_total_label.configure(disabledforeground="#a3a3a3")
+            # new_total_label.configure(foreground="#000000")
+            # new_total_label.configure(highlightbackground="#d9d9d9")
+            # new_total_label.configure(highlightcolor="black")
             new_total_label.configure(text='''Year Saved''')
             new_row['total_label'] = new_total_label
             #
-            new_full_total_text = tk.Text(self.data_frame)
-            new_full_total_text.place(x=575, y=y, height=25, width=80)
-            new_full_total_text.configure(background="white")
-            new_full_total_text.configure(font="TkTextFont")
-            new_full_total_text.configure(foreground="black")
-            new_full_total_text.configure(highlightbackground="#d9d9d9")
-            new_full_total_text.configure(highlightcolor="black")
-            new_full_total_text.configure(insertbackground="black")
-            new_full_total_text.configure(selectbackground="#c4c4c4")
-            new_full_total_text.configure(selectforeground="black")
-            new_full_total_text.configure(wrap="word")
-            new_row['full_total_text'] = new_full_total_text
+            new_total_text = tk.CTkTextbox(self.data_frame, height=25, width=90)
+            new_total_text.place(x=730, y=y)
+            # removed when converting to customtkinter
+            # new_total_text.configure(background="white")
+            # new_total_text.configure(font="TkTextFont")
+            # new_total_text.configure(foreground="black")
+            # new_total_text.configure(highlightbackground="#d9d9d9")
+            # new_total_text.configure(highlightcolor="black")
+            # new_total_text.configure(insertbackground="black")
+            # new_total_text.configure(selectbackground="#c4c4c4")
+            # new_total_text.configure(selectforeground="black")
+            # new_total_text.configure(wrap="word")
+            new_row['total_text'] = new_total_text
             #
-            new_full_total_label = tk.Label(self.data_frame)
-            new_full_total_label.place(x=665, y=y, height=25, width=65)
-            new_full_total_label.configure(activebackground="#f9f9f9")
+            new_full_total_label = tk.CTkLabel(self.data_frame, height=25, width=65)
+            new_full_total_label.place(x=830, y=y)
+            # removed when converting to customtkinter
+            # new_full_total_label.configure(activebackground="#f9f9f9")
             new_full_total_label.configure(anchor='w')
-            new_full_total_label.configure(background="#d9d9d9")
-            new_full_total_label.configure(compound='left')
-            new_full_total_label.configure(disabledforeground="#a3a3a3")
-            new_full_total_label.configure(foreground="#000000")
-            new_full_total_label.configure(highlightbackground="#d9d9d9")
-            new_full_total_label.configure(highlightcolor="black")
+            # removed when converting to customtkinter
+            # new_full_total_label.configure(background="#d9d9d9")
+            # new_full_total_label.configure(compound='left')
+            # new_full_total_label.configure(disabledforeground="#a3a3a3")
+            # new_full_total_label.configure(foreground="#000000")
+            # new_full_total_label.configure(highlightbackground="#d9d9d9")
+            # new_full_total_label.configure(highlightcolor="black")
             new_full_total_label.configure(text='''Total Saved''')
             new_row['full_total_label'] = new_full_total_label
             #
-            new_salary_text = tk.Text(self.data_frame)
-            new_salary_text.place(x=740, y=y, height=25, width=80)
-            new_salary_text.configure(background="white")
-            new_salary_text.configure(font="TkTextFont")
-            new_salary_text.configure(foreground="black")
-            new_salary_text.configure(highlightbackground="#d9d9d9")
-            new_salary_text.configure(highlightcolor="black")
-            new_salary_text.configure(insertbackground="black")
-            new_salary_text.configure(selectbackground="#c4c4c4")
-            new_salary_text.configure(selectforeground="black")
-            new_salary_text.configure(wrap="word")
+            new_full_total_text = tk.CTkTextbox(self.data_frame, height=25, width=120)
+            new_full_total_text.place(x=900, y=y)
+            # removed when converting to customtkinter
+            # new_full_total_text.configure(background="white")
+            # new_full_total_text.configure(font="TkTextFont")
+            # new_full_total_text.configure(foreground="black")
+            # new_full_total_text.configure(highlightbackground="#d9d9d9")
+            # new_full_total_text.configure(highlightcolor="black")
+            # new_full_total_text.configure(insertbackground="black")
+            # new_full_total_text.configure(selectbackground="#c4c4c4")
+            # new_full_total_text.configure(selectforeground="black")
+            # new_full_total_text.configure(wrap="word")
+            new_row['full_total_text'] = new_full_total_text
+            #
+            new_salary_label = tk.CTkLabel(self.data_frame, height=25, width=50)
+            new_salary_label.place(x=65, y=y)
+            # removed when converting to customtkinter
+            # new_salary_label.configure(activebackground="#f9f9f9")
+            new_salary_label.configure(anchor='w')
+            # removed when converting to customtkinter
+            # new_salary_label.configure(background="#d9d9d9")
+            # new_salary_label.configure(compound='left')
+            # new_salary_label.configure(disabledforeground="#a3a3a3")
+            # new_salary_label.configure(foreground="#000000")
+            # new_salary_label.configure(highlightbackground="#d9d9d9")
+            # new_salary_label.configure(highlightcolor="black")
+            new_salary_label.configure(text='''Salary''')
+            new_row['salary_label'] = new_salary_label
+            #
+            new_salary_text = tk.CTkTextbox(self.data_frame, height=25, width=105)
+            new_salary_text.place(x=115, y=y)
+            # removed when converting to customtkinter
+            # new_salary_text.configure(background="white")
+            # new_salary_text.configure(font="TkTextFont")
+            # new_salary_text.configure(foreground="black")
+            # new_salary_text.configure(highlightbackground="#d9d9d9")
+            # new_salary_text.configure(highlightcolor="black")
+            # new_salary_text.configure(insertbackground="black")
+            # new_salary_text.configure(selectbackground="#c4c4c4")
+            # new_salary_text.configure(selectforeground="black")
+            # new_salary_text.configure(wrap="word")
             new_salary = self.salary[1] * ((1+(self._raise/100))**len(self.rows))
             last_year = max(self.salary.keys())
             self.salary[last_year+1] = new_salary
+            self.finances[len(self.rows)+1] = {}
+            self.finances[len(self.rows)+1]['salary'] = locale.currency(new_salary,symbol=True,grouping=True)
             new_salary_text.insert(INSERT,locale.currency(new_salary,symbol=True,grouping=True))
             new_salary_text.configure(state=DISABLED)
             new_row['salary_text'] = new_salary_text
@@ -477,38 +546,33 @@ class calc_window:
             year_total += new_401k_amount
             new_401k_text.insert(INSERT,locale.currency(new_401k_amount,symbol=True,grouping=True))
             new_401k_text.configure(state=DISABLED)
+            self.finances[len(self.rows)+1]['401k'] = locale.currency(new_401k_amount,symbol=True,grouping=True)
             # process 401k match calculations and update the widget
             new_match_amount = self.match / 100 * self.salary[len(self.rows)+2]
             year_total += new_match_amount
             new_match_text.insert(INSERT,locale.currency(new_match_amount,symbol=True,grouping=True))
             new_match_text.configure(state=DISABLED)
+            self.finances[len(self.rows)+1]['match'] = locale.currency(new_match_amount,symbol=True,grouping=True)
             # process savings calculations and update the widget
             new_savings_amount = self.savings / 100 * self.salary[len(self.rows)+2]
             year_total += new_savings_amount
             new_savings_text.insert(INSERT,locale.currency(new_savings_amount,symbol=True,grouping=True))
             new_savings_text.configure(state=DISABLED)
+            self.finances[len(self.rows)+1]['savings'] = locale.currency(new_savings_amount,symbol=True,grouping=True)
+            self.finances[len(self.rows)+1]['year'] = locale.currency(year_total,symbol=True,grouping=True)
             #
             self.savings_total += year_total
+            self.finances[len(self.rows)+1]['total'] = locale.currency(self.savings_total,symbol=True,grouping=True)
             new_total_text.insert(INSERT,locale.currency(year_total,symbol=True,grouping=True))
             new_total_text.configure(state=DISABLED)
             #
             new_full_total_text.insert(INSERT,locale.currency(self.savings_total,symbol=True,grouping=True))
             new_full_total_text.configure(state=DISABLED)
             #
-            new_salary_label = tk.Label(self.data_frame)
-            new_salary_label.place(x=830, y=y, height=25, width=65)
-            new_salary_label.configure(activebackground="#f9f9f9")
-            new_salary_label.configure(anchor='w')
-            new_salary_label.configure(background="#d9d9d9")
-            new_salary_label.configure(compound='left')
-            new_salary_label.configure(disabledforeground="#a3a3a3")
-            new_salary_label.configure(foreground="#000000")
-            new_salary_label.configure(highlightbackground="#d9d9d9")
-            new_salary_label.configure(highlightcolor="black")
-            new_salary_label.configure(text='''Salary''')
-            new_row['salary_label'] = new_salary_label
-            #
-            self.data_frame.children['!canvas'].configure(height=self.data_frame.children['!canvas'].winfo_height()+35)
+            year_num_label = tk.CTkLabel(self.data_frame, height=25, width=65)
+            year_num_label.place(x=0, y=y)
+            year_num_label.configure(text=f'''Year {len(self.rows)+1}''')
+            new_row['year_num_label'] = year_num_label
             #
             return new_row
         #
@@ -523,6 +587,11 @@ class calc_window:
                 self.rows.append(create_row(self))
         # create command for updating self.data values
         def update_data(self):
+            self.finances = {}
+            if hasattr(self,'scrollbar'):
+                self.scrollbar.destroy()
+            if hasattr(self,'savings_total'):
+                self.savings_total = 0
             get_years(self)
             get_salary(self)
             get_raise(self)
@@ -530,15 +599,14 @@ class calc_window:
             get_match(self)
             get_savings(self)
             place_widgets(self)
-            self.data_frame.children['!canvas'].configure(height=(10+(len(self.rows)*35)))
-            self.data_frame.children['!canvas'].update()
-            self.data_frame._resize_interior()
-            # print(f'{self.years=}')
-            # print(f'{self.salary=}')
-            # print(f'{self._raise=}')
-            # print(f'{self._401k=}')
-            # print(f'{self.match=}')
-            # print(f'{self.savings=}')
+            if self.years > 21:
+                self.canvas.children['!ctkframe'].configure(height=(10+(self.years*35)))
+                self.canvas.configure(height=(10+(self.years*35)))
+                self.scrollbar = tk.CTkScrollbar(self.canvas,orientation='vertical')
+                self.scrollbar.pack(side='right',fill='y')
+                self.canvas.configure(yscrollcommand=self.scrollbar.set)
+                self.scrollbar.configure(command=self.canvas.yview)
+                self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         # assign command to all buttons
         self.years_button.configure(command=lambda: update_data(self))
         self.salary_button.configure(command=lambda: update_data(self))
@@ -546,6 +614,48 @@ class calc_window:
         self._401k_button.configure(command=lambda: update_data(self))
         self.match_button.configure(command=lambda: update_data(self))
         self.savings_button.configure(command=lambda: update_data(self))
+        # beginning report creation command
+        def run_report(self):
+            wb = openpyxl.Workbook()
+            ws = wb.active
+            ws['A1'] = 'Year Number'
+            ws['A1'].font = openpyxl.styles.Font(bold=True)
+            ws['B1'] = 'Salary'
+            ws['B1'].font = openpyxl.styles.Font(bold=True)
+            ws['C1'] = '401k Contribution'
+            ws['C1'].font = openpyxl.styles.Font(bold=True)
+            ws['D1'] = 'Employer 401k Match'
+            ws['D1'].font = openpyxl.styles.Font(bold=True)
+            ws['E1'] = 'Savings Contribution'
+            ws['E1'].font = openpyxl.styles.Font(bold=True)
+            ws['F1'] = 'Total Saved This Year'
+            ws['F1'].font = openpyxl.styles.Font(bold=True)
+            ws['G1'] = 'Total Saved Overall'
+            ws['G1'].font = openpyxl.styles.Font(bold=True)
+            for i in range(2,self.years+2):
+                ws[f'A{i}'] = f'Year {i-1}'
+                ws[f'B{i}'] = self.finances[i-1]['salary']
+                ws[f'C{i}'] = self.finances[i-1]['401k']
+                ws[f'D{i}'] = self.finances[i-1]['match']
+                ws[f'E{i}'] = self.finances[i-1]['savings']
+                ws[f'F{i}'] = self.finances[i-1]['year']
+                ws[f'G{i}'] = self.finances[i-1]['total']
+            medium_border = openpyxl.styles.Border(left=openpyxl.styles.Side(style='thin'), right=openpyxl.styles.Side(style='thin'), top=openpyxl.styles.Side(style='thin'), bottom=openpyxl.styles.Side(style='thin'))
+            dims = {}
+            for row in ws.rows:
+                for cell in row:
+                    cell.border = medium_border
+            columns = ['A','B','C','D','E','F','G']
+            for column in columns:
+                new_column_length = max(len(str(cell.value)) for cell in ws[column])
+                if new_column_length > 0:
+                    ws.column_dimensions[column].width = new_column_length*1.23
+            filetypes = (
+                ('Excel Workbook','*.xlsx'),
+            )
+            file_path = asksaveasfilename(filetypes=filetypes)
+            wb.save(f'{resource_path(file_path)}.xlsx')
+        self.sub_menu.add_command(label='Save Report',command=lambda: run_report(self))
 
 
 def start_up():
