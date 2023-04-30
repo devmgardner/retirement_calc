@@ -74,7 +74,7 @@ class calc_window:
         def get_years(self):
             self.years = int(self.years_entry.get())
         #
-        self.years_label = tk.CTkLabel(self.top, height=20, width=31)
+        self.years_label = tk.CTkLabel(self.top, height=20, width=31, fg_color="black")
         self.years_label.place(relx=0.895, rely=0.008)
         self.years_label.configure(text='''Years''')
         #
@@ -90,7 +90,7 @@ class calc_window:
             self.salary = {}
             self.salary[1] = float(self.salary_entry.get())
         #
-        self.salary_label = tk.CTkLabel(self.top, height=20, width=35)
+        self.salary_label = tk.CTkLabel(self.top, height=20, width=35, fg_color="black")
         self.salary_label.place(relx=0.895, rely=0.054)
         self.salary_label.configure(text='''Salary''')
         #
@@ -104,7 +104,7 @@ class calc_window:
         def get_raise(self):
             self._raise = float(self.raise_entry.get())
         #
-        self.raise_label = tk.CTkLabel(self.top, height=20, width=35)
+        self.raise_label = tk.CTkLabel(self.top, height=20, width=35, fg_color="black")
         self.raise_label.place(relx=0.895, rely=0.097)
         self.raise_label.configure(text='''Raise''')
         #
@@ -118,7 +118,7 @@ class calc_window:
         def get_401k(self):
             self._401k = float(self._401k_entry.get())
         #
-        self._401k_label = tk.CTkLabel(self.top, height=20, width=35)
+        self._401k_label = tk.CTkLabel(self.top, height=20, width=35, fg_color="black")
         self._401k_label.place(relx=0.895, rely=0.141)
         self._401k_label.configure(text='''401k''')
         #
@@ -132,7 +132,7 @@ class calc_window:
         def get_match(self):
             self.match = float(self.match_entry.get())
         #
-        self.match_label = tk.CTkLabel(self.top, height=20, width=35)
+        self.match_label = tk.CTkLabel(self.top, height=20, width=35, fg_color="black")
         self.match_label.place(relx=0.895, rely=0.185)
         self.match_label.configure(text='''Match''')
         #
@@ -146,7 +146,7 @@ class calc_window:
         def get_savings(self):
             self.savings = float(self.savings_entry.get())
         #
-        self.savings_label = tk.CTkLabel(self.top, height=20, width=45)
+        self.savings_label = tk.CTkLabel(self.top, height=20, width=45, fg_color="black")
         self.savings_label.place(relx=0.892, rely=0.229)
         self.savings_label.configure(text='''Savings''')
         #
