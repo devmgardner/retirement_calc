@@ -162,3 +162,5 @@ notes.txt
 compile/*
 compile-linux/*
 compile-mac/*
+.DS_Store
+._.DS_Store
