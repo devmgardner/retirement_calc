@@ -10,7 +10,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.constants import *
 
-import main_app
+import retirement_calc
 
 _debug = True # False to eliminate debug printing from callback functions.
 
@@ -22,10 +22,10 @@ def main(*args):
     # Creates a toplevel widget.
     global _top44, _w44
     _top44 = root
-    _w44 = main_app.calc_window(_top44)
+    _w44 = retirement_calc.calc_window(_top44)
     root.mainloop()
 
 if __name__ == '__main__':
-    main_app.start_up()
+    retirement_calc.start_up()
 
 
